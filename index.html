@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Daily Brief</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <div class="top-header">
+
+            <div class="logo">
+
+                <h1>📰 Daily Brief</h1>
+
+                <p>Stay Updated. Learn Daily.</p>
+
+            </div>
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search News...">
+
+                <button id="searchBtn">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <nav class="navbar">
+
+            <a href="#" id="homeLink">🏠 Home</a>
+            <a href="#" data-category="nation">🇮🇳 India</a>
+            <a href="#" data-category="world">🌍 World</a>
+            <a href="#" data-category="technology">🤖 AI</a>
+            <a href="#" data-category="business">💼 Business</a>
+            <a href="#" data-category="sports">🏏 Sports</a>
+            <a href="#" data-category="technology">💻 Technology</a>
+            <a href="bookmarks.html">❤️ Bookmarks</a>
+
+        </nav>
+
+    </header>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="container">
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <img id="heroImage" src="" alt="Top Story">
+
+            <div class="hero-content">
+
+                <span class="hero-badge">
+
+                    🔥 TOP STORY
+
+                </span>
+
+                <h2 id="heroTitle">
+
+                    Loading...
+
+                </h2>
+
+                <p id="heroDescription">
+
+                    Please wait...
+
+                </p>
+
+                <button id="heroButton">
+
+                    Read Article →
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- QUICK CATEGORIES -->
+
+        <section class="categories">
+
+            <div class="category-card" data-category="general">
+
+                🏠
+
+                <span>Home</span>
+
+            </div>
+
+            <div class="category-card" data-category="nation">
+
+                🇮🇳
+
+                <span>India</span>
+
+            </div>
+
+            <div class="category-card" data-category="world">
+
+                🌍
+
+                <span>World</span>
+
+            </div>
+
+            <div class="category-card" data-category="technology">
+
+                🤖
+
+                <span>AI</span>
+
+            </div>
+
+            <div class="category-card" data-category="business">
+
+                💼
+
+                <span>Business</span>
+
+            </div>
+
+            <div class="category-card" data-category="sports">
+
+                🏏
+
+                <span>Sports</span>
+
+            </div>
+
+        </section>
+
+        <!-- BREAKING NEWS -->
+
+        <section class="breaking-news">
+
+            <h2>🔥 Breaking News</h2>
+
+        </section>
+
+        <!-- NEWS GRID -->
+
+        <section
+            class="news-grid"
+            id="newsGrid">
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h2>📰 Daily Brief</h2>
+
+        <p>
+
+            Stay Updated. Learn Daily.
+
+        </p>
+
+        <p>
+
+            © 2026 Daily Brief | Made with ❤️ by Rutuja
+
+        </p>
+
+    </footer>
+
+    <!-- ================= AI SUMMARY MODAL ================= -->
+
+<div id="summaryModal" class="modal">
+
+    <div class="modal-content">
+
+        <span id="closeModal" class="close-btn">&times;</span>
+
+        <h2>🤖 AI News Summary</h2>
+
+        <hr>
+
+        <h3 id="summaryTitle">
+            Loading...
+        </h3>
+
+        <div class="summary-section">
+
+            <h4>❓ What happened?</h4>
+
+            <p id="summaryProblem">
+                Loading...
+            </p>
+
+        </div>
+
+        <div class="summary-section">
+
+            <h4>📖 Background</h4>
+
+            <p id="summaryBackground">
+                Loading...
+            </p>
+
+        </div>
+
+        <div class="summary-section">
+
+            <h4>🔥 Latest Update</h4>
+
+            <p id="summaryLatest">
+                Loading...
+            </p>
+
+        </div>
+
+        <div class="summary-section">
+
+            <h4>🎯 Why it matters</h4>
+
+            <p id="summaryImportance">
+                Loading...
+            </p>
+
+        </div>
+
+        <button id="summaryReadBtn">
+
+            Read Full Article →
+
+        </button>
+
+    </div>
+
+</div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
