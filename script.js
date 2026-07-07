@@ -6,10 +6,8 @@
 // ======================
 // API KEY
 // ======================
-
 const apiKey = "f23f993e9bc3a472ac66a0775f519f4d";
 
-const geminiApiKey = "AQ.Ab8RN6JDRF5TJUZADFTur6z1W_Ijpt-WWymCXCaV3RunuSVS6g";
 
 console.log("SCRIPT LOADED");
 
@@ -32,6 +30,8 @@ const heroButton = document.getElementById("heroButton");
 const searchInput = document.getElementById("searchInput");
 
 const searchBtn = document.getElementById("searchBtn");
+
+const themeBtn = document.getElementById("themeBtn");
 
 const categoryCards = document.querySelectorAll(".category-card");
 
@@ -349,92 +349,95 @@ document.addEventListener("error",(event)=>{
 
 async function generateAISummary(article){
 
-    const prompt = `
-You are a professional news analyst.
-
-Read the news below and answer ONLY in this format.
-
-What happened:
-...
-
-Background:
-...
-
-Latest Update:
-...
-
-Why it matters:
-...
-
-Keep every section short.
-Use simple English.
-Do NOT invent facts.
-If something is missing, write:
-"Not mentioned in the article."
-
-Title:
-${article.title}
-
-Description:
-${article.description}
-`;
-
     try{
 
-        const response = await fetch(
-
-`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
-
-        {
+        const response = await fetch("http://localhost:3000/api/summary",{
 
             method:"POST",
 
             headers:{
-
                 "Content-Type":"application/json"
-
             },
 
             body:JSON.stringify({
 
-                contents:[
+                title:article.title,
 
-                    {
-
-                        parts:[
-
-                            {
-
-                                text:prompt
-
-                            }
-
-                        ]
-
-                    }
-
-                ]
+                description:article.description
 
             })
 
         });
 
-        console.log("Status:", response.status);
+        if(!response.ok){
 
-const data = await response.json();
+            throw new Error("Server Error");
 
-console.log("Gemini Response:", data);
+        }
 
-return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        const data = await response.json();
+
+        return data.summary;
+
     }
 
     catch(error){
 
-        console.log(error);
+        console.error(error);
 
-        return "Unable to generate AI summary.";
+        return `What happened:
+Unable to generate AI summary.
+
+Background:
+Please make sure the backend server is running.
+
+Latest Update:
+No AI response received.
+
+Why it matters:
+The frontend could not communicate with the AI server.`;
 
     }
+
+}
+// =====================================
+// DARK MODE
+// =====================================
+
+themeBtn.addEventListener("click",()=>{
+
+    document.body.classList.toggle("dark-mode");
+
+    console.log(document.body.className);
+
+    if(document.body.classList.contains("dark-mode")){
+
+        localStorage.setItem("theme","dark");
+
+        themeBtn.innerText="☀️ Light Mode";
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","light");
+
+        themeBtn.innerText="🌙 Dark Mode";
+
+    }
+
+});
+
+
+// Load saved theme
+
+if(localStorage.getItem("theme")==="dark"){
+
+    document.body.classList.toggle("dark-mode");
+
+console.log(document.body.className);
+
+    themeBtn.innerText="☀️ Light Mode";
 
 }
 
@@ -451,6 +454,8 @@ loadNews();
 const summaryModal = document.getElementById("summaryModal");
 
 const closeModal = document.getElementById("closeModal");
+
+console.log(closeModal);
 
 const summaryTitle = document.getElementById("summaryTitle");
 
@@ -472,59 +477,26 @@ async function showSummary(index){
     summaryTitle.innerText = article.title;
 
     summaryProblem.innerText = "Generating AI Summary...";
+    summaryBackground.innerText = "";
+    summaryLatest.innerText = "";
+    summaryImportance.innerText = "";
 
-summaryBackground.innerText = "";
+    summaryModal.style.display = "flex";
 
-summaryLatest.innerText = "";
+    const aiSummary = await generateAISummary(article);
 
-summaryImportance.innerText = "";
+    const what = aiSummary.match(/What happened:\s*([\s\S]*?)\n\s*Background:/i);
+    const background = aiSummary.match(/Background:\s*([\s\S]*?)\n\s*Latest Update:/i);
+    const latest = aiSummary.match(/Latest Update:\s*([\s\S]*?)\n\s*Why it matters:/i);
+    const importance = aiSummary.match(/Why it matters:\s*([\s\S]*)/i);
 
-summaryModal.style.display = "flex";
+    summaryProblem.innerText = what ? what[1].trim() : "Not available.";
 
-const aiSummary = await generateAISummary(article);
+    summaryBackground.innerText = background ? background[1].trim() : "Not available.";
 
-const sections = aiSummary.split("\n");
+    summaryLatest.innerText = latest ? latest[1].trim() : "Not available.";
 
-summaryProblem.innerText = "";
-
-summaryBackground.innerText = "";
-
-summaryLatest.innerText = "";
-
-summaryImportance.innerText = "";
-
-sections.forEach(line=>{
-
-    if(line.startsWith("What happened")){
-
-        summaryProblem.innerText =
-        line.replace("What happened:","").trim();
-
-    }
-
-    else if(line.startsWith("Background")){
-
-        summaryBackground.innerText =
-        line.replace("Background:","").trim();
-
-    }
-
-    else if(line.startsWith("Latest Update")){
-
-        summaryLatest.innerText =
-        line.replace("Latest Update:","").trim();
-
-    }
-
-    else if(line.startsWith("Why it matters")){
-
-        summaryImportance.innerText =
-        line.replace("Why it matters:","").trim();
-
-    }
-
-});
-
+    summaryImportance.innerText = importance ? importance[1].trim() : "Not available.";
 
     summaryReadBtn.onclick = () => {
 
@@ -532,23 +504,20 @@ sections.forEach(line=>{
 
     };
 
-    summaryModal.style.display = "flex";
-
 }
+// =====================================
+// CLOSE MODAL
+// =====================================
 
-
-// Close button
-
-closeModal.onclick = () => {
+// Close using the ❌ button
+closeModal.addEventListener("click", () => {
 
     summaryModal.style.display = "none";
 
-};
+});
 
-
-// Close when clicking outside
-
-window.onclick = (event) => {
+// Close when clicking outside the modal
+window.addEventListener("click", (event) => {
 
     if(event.target === summaryModal){
 
@@ -556,5 +525,15 @@ window.onclick = (event) => {
 
     }
 
-};
+});
 
+// Optional: Close with Escape key
+document.addEventListener("keydown", (event) => {
+
+    if(event.key === "Escape"){
+
+        summaryModal.style.display = "none";
+
+    }
+
+});
