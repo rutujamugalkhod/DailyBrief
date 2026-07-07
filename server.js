@@ -106,3 +106,62 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+// ===============================
+// AI CHAT ROUTE
+// ===============================
+
+app.post("/api/chat", async (req, res) => {
+
+    try {
+
+        const { title, description, question } = req.body;
+
+        const prompt = `
+You are an AI News Assistant.
+
+News Title:
+${title}
+
+News Description:
+${description}
+
+User Question:
+${question}
+
+Answer ONLY based on the news above.
+
+If the answer is not available from the article,
+say:
+"That information is not mentioned in this article."
+
+Use simple English.
+`;
+
+        const response = await ai.models.generateContent({
+
+            model: "gemini-2.5-flash",
+
+            contents: prompt,
+
+        });
+
+        res.json({
+
+            answer: response.text,
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+
+            error: "Unable to answer the question."
+
+        });
+
+    }
+
+});

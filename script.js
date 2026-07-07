@@ -176,7 +176,7 @@ function displayNews(articles){
 
             </div>
 
-           <div class="card-buttons">
+<div class="card-buttons">
 
     <button
         class="save-btn"
@@ -189,7 +189,14 @@ function displayNews(articles){
     <button
         onclick="showSummary(${index})">
 
-        ✨ AI Summary
+        ✨ Summary
+
+    </button>
+
+    <button
+        onclick="openAIChat(${index})">
+
+        🤖 Ask AI
 
     </button>
 
@@ -469,6 +476,21 @@ const summaryImportance = document.getElementById("summaryImportance");
 
 const summaryReadBtn = document.getElementById("summaryReadBtn");
 
+// =====================================
+// AI CHAT
+// =====================================
+
+const chatModal = document.getElementById("chatModal");
+
+const closeChatModal = document.getElementById("closeChatModal");
+
+const chatQuestion = document.getElementById("chatQuestion");
+
+const askAIBtn = document.getElementById("askAIBtn");
+
+const chatMessages = document.getElementById("chatMessages");
+
+let currentChatArticle = null;
 
 async function showSummary(index){
 
@@ -533,6 +555,131 @@ document.addEventListener("keydown", (event) => {
     if(event.key === "Escape"){
 
         summaryModal.style.display = "none";
+
+    }
+
+});
+
+// =====================================
+// OPEN AI CHAT
+// =====================================
+
+function openAIChat(index){
+
+    currentChatArticle = currentArticles[index + 1];
+
+    chatQuestion.value = "";
+
+    chatMessages.innerHTML = `
+<div class="ai-message">
+🤖 Ask me anything about this article.
+</div>
+`;
+
+    chatModal.style.display = "flex";
+
+}
+
+// =====================================
+// ASK AI
+// =====================================
+
+askAIBtn.addEventListener("click", async () => {
+
+    const question = chatQuestion.value.trim();
+
+    if(question === ""){
+        alert("Please enter a question.");
+        return;
+    }
+
+    // Add user's message
+    chatMessages.innerHTML += `
+        <div class="user-message">
+            👤 ${question}
+        </div>
+    `;
+
+    // Show thinking message
+    chatMessages.innerHTML += `
+        <div class="ai-message" id="thinking">
+            🤖 Thinking...
+        </div>
+    `;
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try{
+
+        const response = await fetch("http://localhost:3000/api/chat",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                title: currentChatArticle.title,
+
+                description: currentChatArticle.description,
+
+                question: question
+
+            })
+
+        });
+
+        const data = await response.json();
+
+        // Remove "Thinking..."
+        document.getElementById("thinking").remove();
+
+        // Add AI response
+        chatMessages.innerHTML += `
+            <div class="ai-message">
+                🤖 ${data.answer}
+            </div>
+        `;
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        chatQuestion.value = "";
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("thinking").remove();
+
+        chatMessages.innerHTML += `
+            <div class="ai-message">
+                ❌ Unable to contact AI server.
+            </div>
+        `;
+
+    }
+
+});
+
+// =====================================
+// CLOSE AI CHAT
+// =====================================
+
+closeChatModal.addEventListener("click",()=>{
+
+    chatModal.style.display = "none";
+
+});
+
+window.addEventListener("click",(event)=>{
+
+    if(event.target===chatModal){
+
+        chatModal.style.display="none";
 
     }
 

@@ -1073,3 +1073,61 @@ body.dark-mode .card-footer{
     color:#9ca3af !important;
 
 }
+
+/* ==========================================
+   AI CHAT
+========================================== */
+
+#chatQuestion{
+
+    width:100%;
+
+    padding:15px;
+
+    margin:20px 0;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    font-size:16px;
+
+}
+
+#askAIBtn{
+
+    width:100%;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    margin-bottom:20px;
+
+}
+
+#askAIBtn:hover{
+
+    background:#1d4ed8;
+
+}
+
+body.dark-mode #chatQuestion{
+
+    background:#374151;
+
+    color:white;
+
+    border:1px solid #555;
+
+}
